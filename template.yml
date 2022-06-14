@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: aws-sam-ts-test
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+    Runtime: nodejs16.x
+    Layers:
+      - !Ref RuntimeDependenciesLayer
+    Environment:
+      Variables:
+        NODE_OPTIONS: --enable-source-maps
+        SENTRY_DSN: https://ac6720eef47442668ab66f47ba944814@o1288457.ingest.sentry.io/6505350
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+
+Resources:
+
+  ServiceApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub AWS-Sentry-TS-${Environment}
+      StageName: !Ref Environment
+      Cors:
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+
+  TestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/app
+      Handler: app.handler
+      Runtime: nodejs16.x
+      Events:
+        TestEvent:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+            RestApiId: !Ref ServiceApi
+  
+  TestFunction1:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/paa
+      Handler: app-1.handler
+      Runtime: nodejs16.x
+      Events:
+        TestEvent:
+          Type: Api
+          Properties:
+            Path: /hellos
+            Method: get
+            RestApiId: !Ref ServiceApi
+
+  # shared layer
+  RuntimeDependenciesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Description: Runtime dependencies for Lambdas
+      ContentUri: ./
+      CompatibleRuntimes:
+        - nodejs16.x
+      RetentionPolicy: Retain
+
+Outputs:
+  ServiceApi:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServiceApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}"
