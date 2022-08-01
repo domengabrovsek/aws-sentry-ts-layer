@@ -11,7 +11,11 @@
     ],
     "target": "es2019",
     "outDir": "./dist",
-    "rootDir": "./src"
+    "baseUrl": ".",
+    "paths": {
+      "axios": ["src/lambda-layers/AxiosLayer/nodejs/node_modules/axios"],
+      "/opt/nodejs/*": ["src/common/*"]
+    }
   },
   "include": [
     "src/**/*.ts",

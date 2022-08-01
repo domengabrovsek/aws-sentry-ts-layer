@@ -7,11 +7,11 @@ Globals:
     MemorySize: 128
     Runtime: nodejs16.x
     Layers:
-      - !Ref RuntimeDependenciesLayer
+      - !Ref AxiosLayer
+      - !Ref CommonLayer
     Environment:
       Variables:
         NODE_OPTIONS: --enable-source-maps
-        SENTRY_DSN: https://ac6720eef47442668ab66f47ba944814@o1288457.ingest.sentry.io/6505350
 
 Parameters:
   Environment:
@@ -21,7 +21,6 @@ Parameters:
       - dev
 
 Resources:
-
   ServiceApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -32,53 +31,51 @@ Resources:
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
 
-  App1:
+  FunctionOne:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: dist/app1
-      Handler: app1.handler
-      Runtime: nodejs16.x
+      Handler: function-one.handler
+      FunctionName: function-one
+      CodeUri: dist/functions/
       Events:
-        TestEvent:
+        FunctionOneEvent:
           Type: Api
           Properties:
-            Path: /app-1
+            Path: /function-one
             Method: get
             RestApiId: !Ref ServiceApi
 
-  # shared layer
-  SentryLayer:
-    Type: AWS::Serverless::LayerVersion
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Description: Sentry dependencies
-      ContentUri: ./
-      CompatibleRuntimes:
-        - nodejs16.x
-      RetentionPolicy: Retain
-
-  AWSLayer:
-    Type: AWS::Serverless::LayerVersion
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Description: AWS sdk dependencies
-      ContentUri: ./
-      CompatibleRuntimes:
-        - nodejs16.x
-      RetentionPolicy: Retain
+  # FunctionTwo:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     CodeUri: dist/functions/function-two
+  #     Handler: function-two.handler
+  #     Runtime: nodejs16.x
+  #     Events:
+  #       TestEvent:
+  #         Type: Api
+  #         Properties:
+  #           Path: /function-two
+  #           Method: get
+  #           RestApiId: !Ref ServiceApi
   
   AxiosLayer:
    Type: AWS::Serverless::LayerVersion
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Description: AWS sdk dependencies
-      ContentUri: ./
-      CompatibleRuntimes:
-        - nodejs16.x
-      RetentionPolicy: Retain
+   Properties:
+    LayerName: axios-layer
+    ContentUri: node-modules-axios-layer/
+    CompatibleRuntimes:
+      - nodejs16.x
+    RetentionPolicy: Retain
+
+  CommonLayer:
+   Type: AWS::Serverless::LayerVersion
+   Properties:
+    LayerName: common-layer
+    ContentUri: common-layer/
+    CompatibleRuntimes:
+      - nodejs16.x
+    RetentionPolicy: Retain
 
 Outputs:
   ServiceApi:
