@@ -32,41 +32,49 @@ Resources:
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
 
-  TestFunction:
+  App1:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: dist/app
-      Handler: app.handler
+      CodeUri: dist/app1
+      Handler: app1.handler
       Runtime: nodejs16.x
       Events:
         TestEvent:
           Type: Api
           Properties:
-            Path: /hello
-            Method: get
-            RestApiId: !Ref ServiceApi
-  
-  TestFunction1:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: dist/paa
-      Handler: app-1.handler
-      Runtime: nodejs16.x
-      Events:
-        TestEvent:
-          Type: Api
-          Properties:
-            Path: /hellos
+            Path: /app-1
             Method: get
             RestApiId: !Ref ServiceApi
 
   # shared layer
-  RuntimeDependenciesLayer:
+  SentryLayer:
     Type: AWS::Serverless::LayerVersion
     Metadata:
       BuildMethod: makefile
     Properties:
-      Description: Runtime dependencies for Lambdas
+      Description: Sentry dependencies
+      ContentUri: ./
+      CompatibleRuntimes:
+        - nodejs16.x
+      RetentionPolicy: Retain
+
+  AWSLayer:
+    Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Description: AWS sdk dependencies
+      ContentUri: ./
+      CompatibleRuntimes:
+        - nodejs16.x
+      RetentionPolicy: Retain
+  
+  AxiosLayer:
+   Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Description: AWS sdk dependencies
       ContentUri: ./
       CompatibleRuntimes:
         - nodejs16.x

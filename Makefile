@@ -1,10 +1,9 @@
-.PHONY: build-RuntimeDependenciesLayer build-lambda-common
-.PHONY: build-app wtf
+.PHONY: build-SentryLayer
+.PHONY: build-AWSLayer
+.PHONY: build-Lambdas
 
-build-TestFunction:
+build-Lambdas:
 	$(MAKE) HANDLER=src/app.ts build-lambda-common
-build-TestFunction1:
-	$(MAKE) HANDLER=src/app-1.ts build-lambda-common
 
 build-lambda-common:
 	npm install
@@ -13,8 +12,20 @@ build-lambda-common:
 	npm run build -- --build tsconfig-only-handler.json
 	cp -r dist "$(ARTIFACTS_DIR)/"
 
-build-RuntimeDependenciesLayer:
+build-SentryLayer:
 	mkdir -p "$(ARTIFACTS_DIR)/nodejs"
-	cp package.json package-lock.json "$(ARTIFACTS_DIR)/nodejs/"
+	cp lambda-layers/SentryLayer/package.json "$(ARTIFACTS_DIR)/nodejs/"
 	npm install --production --prefix "$(ARTIFACTS_DIR)/nodejs/"
-	rm "$(ARTIFACTS_DIR)/nodejs/package.json" # to avoid rebuilding when changes doesn't relate to dependencies
+	rm "$(ARTIFACTS_DIR)/nodejs/package.json" 
+
+build-AWSLayer:
+	mkdir -p "$(ARTIFACTS_DIR)/nodejs"
+	cp lambda-layers/AWSLayer/package.json "$(ARTIFACTS_DIR)/nodejs/"
+	npm install --production --prefix "$(ARTIFACTS_DIR)/nodejs/"
+	rm "$(ARTIFACTS_DIR)/nodejs/package.json" 
+
+build-AxiosLayer:
+	mkdir -p "$(ARTIFACTS_DIR)/nodejs"
+	cp lambda-layers/AxiosLayer/package.json "$(ARTIFACTS_DIR)/nodejs/"
+	npm install --production --prefix "$(ARTIFACTS_DIR)/nodejs/"
+	rm "$(ARTIFACTS_DIR)/nodejs/package.json" 
