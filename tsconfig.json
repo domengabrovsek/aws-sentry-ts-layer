@@ -13,8 +13,8 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "axios": ["src/lambda-layers/AxiosLayer/nodejs/node_modules/axios"],
-      "/opt/nodejs/*": ["src/common/*"]
+      "axios": ["dist/axios-layer/nodejs/node_modules/axios"],
+      "/opt/nodejs/common/*": ["src/common/*"]
     }
   },
   "include": [

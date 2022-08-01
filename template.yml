@@ -45,25 +45,25 @@ Resources:
             Method: get
             RestApiId: !Ref ServiceApi
 
-  # FunctionTwo:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     CodeUri: dist/functions/function-two
-  #     Handler: function-two.handler
-  #     Runtime: nodejs16.x
-  #     Events:
-  #       TestEvent:
-  #         Type: Api
-  #         Properties:
-  #           Path: /function-two
-  #           Method: get
-  #           RestApiId: !Ref ServiceApi
+  FunctionTwo:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: function-two.handler
+      FunctionName: function-two
+      CodeUri: dist/functions
+      Events:
+        TestEvent:
+          Type: Api
+          Properties:
+            Path: /function-two
+            Method: get
+            RestApiId: !Ref ServiceApi
   
   AxiosLayer:
    Type: AWS::Serverless::LayerVersion
    Properties:
     LayerName: axios-layer
-    ContentUri: node-modules-axios-layer/
+    ContentUri: dist/axios-layer/
     CompatibleRuntimes:
       - nodejs16.x
     RetentionPolicy: Retain
@@ -72,7 +72,7 @@ Resources:
    Type: AWS::Serverless::LayerVersion
    Properties:
     LayerName: common-layer
-    ContentUri: common-layer/
+    ContentUri: dist/common-layer/
     CompatibleRuntimes:
       - nodejs16.x
     RetentionPolicy: Retain

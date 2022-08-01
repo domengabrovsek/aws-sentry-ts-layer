@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "clean": "rimraf node-modules-axios-layer node_modules common-layer",
+    "clean": "rimraf dist",
     "compile": "tsc",
-    "build": "npm run clean && npm install && npm run compile && npm run build:axios && npm run build:common",
-    "build:axios": "mkdir -p node-modules-axios-layer/nodejs && mv node_modules node-modules-axios-layer/nodejs/",
-    "build:common": "mkdir -p common-layer/nodejs && mv dist/common/* common-layer/nodejs/",
-    "deploy": "sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --profile aws-sam-ts-test-user --config-env dev --resolve-s3"
+    "build": "npm run clean && npm install && npm run build:axios && npm run compile && npm run build:common",
+    "build:axios": "npm install --prefix src/layers/AxiosLayer --no-package-lock --no-save && mkdir -p dist/axios-layer/nodejs/ && mv src/layers/AxiosLayer/node_modules/ dist/axios-layer/nodejs",
+    "build:common": "mkdir -p dist/common-layer/nodejs && mv dist/common dist/common-layer/nodejs",
+    "deploy": "npm run build && sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --profile aws-sam-ts-test-user --config-env dev --resolve-s3"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,6 @@
   "dependencies": {
     "@types/aws-lambda": "^8.10.100",
     "@types/node": "^17.0.42",
-    "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "ts-loader": "^9.3.0",
     "ts-node": "^10.8.1",

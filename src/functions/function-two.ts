@@ -1,4 +1,4 @@
-import { getRandomCatFacts } from "/opt/nodejs/services/service-two";
+import { getRandomCatFacts } from "/opt/nodejs/common/services/service-two";
 
 export const handler = async (event: any) => {
 
