@@ -1,3 +1,5 @@
-# aws-sentry-ts-layer
+# aws-ts-lambda-layer
 
-inspired by: https://github.com/Envek/aws-sam-typescript-layers-example
+## description
+
+Working example of using lambda layers to share common code between lambda functions. Implemented using typescript + aws-sam.
